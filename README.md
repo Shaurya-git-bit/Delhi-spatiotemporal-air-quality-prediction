@@ -29,11 +29,21 @@ The current evaluation covers 33 monitoring stations and approximately 2.23 mill
 
 ## Current Progress
 
-Initial experiments show that IDW currently performs slightly better than the tested GAM and LightGBM approaches, with an R² of approximately 0.814.
+### Inverse Distance Weighting (IDW)
 
-This raises an important research question: how much of the remaining prediction error comes from model limitations, monitoring-network geometry, and short-term pollution variability that is not captured by the available features?
+I implemented IDW as a spatial interpolation baseline to estimate PM2.5 concentrations at monitoring stations excluded from the prediction process. Geographic distances between stations were calculated using the Haversine formula, and nearby stations were assigned greater influence through inverse-distance weights. I evaluated distance powers of 1.5 and 2.0, with a minimum distance threshold of 0.5 km to prevent excessively large weights.
 
-Further experiments are underway to investigate these limitations, particularly during periods of elevated pollution and rapidly changing atmospheric conditions.
+For each prediction, the target station was excluded from the source network, and measurements unavailable at a given hour were excluded from the weighted average. I also tested modifications to the spatial weights using wind direction, wind speed, temperature, humidity and boundary-layer height to examine whether atmospheric conditions could improve spatial estimates.
+
+### Generalized Additive Model (GAM)
+
+I developed a Generalized Additive Model using PyGAM to capture nonlinear relationships between PM2.5 concentrations, atmospheric conditions, temporal patterns and spatial information.
+
+The model incorporates long-term trends, daily and seasonal cycles, boundary-layer height, wind speed and wind direction. Cyclic smooth functions capture repeating daily and annual patterns, while a two-dimensional smooth term models the relationship between wind direction components.
+
+To incorporate spatial information, I used IDW estimates from surrounding stations at the current hour and at 1-, 3- and 6-hour lags as additional model inputs. The smoothing parameter was selected through three-fold grouped cross-validation, with entire monitoring stations held out during validation. Training was subsampled at 12-hour intervals to reduce computational costs, while predictions were evaluated hourly.
+
+I also conducted separate experiments incorporating fire radiative power and fire counts to investigate whether fire activity provided additional predictive information.
 
 ## Project Status
 
