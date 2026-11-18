@@ -1,2 +1,2 @@
-# Delhi-spatiotemporal-air-quality-prediction
+# Delhi-spatiotemporal-air-quality-prediction (Work In Progress)
 An extension of my published Delhi air-quality forecasting research, developing a spatiotemporal architecture for predicting air quality at unmonitored locations, beginning with PM2.5 and expanding to additional pollutants.
